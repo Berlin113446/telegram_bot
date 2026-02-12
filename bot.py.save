@@ -1,0 +1,32 @@
+from aiogram import Bot, Dispatcher, types
+from aiogram.utils import executor
+
+TOKEN = "8072695593:AAGDGYT8F0B_mTzbPLadMGAko6miBOyidKc"
+GROUP_ID = -1001234567890  # ID вашої групи
+
+bot = Bot(token=TOKEN)
+dp = Dispatcher(bot)
+
+user_messages = {}
+
+# Коли користувач пише боту
+@dp.message_handler()
+async def forward_to_group(message: types.Message):
+    sent = await bot.send_message(GROUP_ID, f"{message.from_user.first_name}: {message.text}")
+    user_messages[sent.message_id] = message.from_user.id
+
+# Коли хтось відповідає в групі
+@dp.message_handler(lambda message: message.chat.id == GROUP_ID and message.reply_to_message)
+async def group_reply(message: types.Message):
+    original_id = message.reply_to_message.message_id
+    if original_id in user_messages:
+        user_id = user_messages[original_id]
+        await bot.send_message(user_id, f"Відповідь з групи: {message.text}")
+
+# ТИМЧАСОВИЙ ХЕНДЛЕР, щоб дізнатись chat_id групи
+@dp.message_handler()
+async def get_group_id(message: types.Message):
+    if message.chat.type in ["group", "supergroup"]:
+        print("GROUP_ID:", message.chat.id)
+
+executor.start_polling(dp, skip_updates=True)

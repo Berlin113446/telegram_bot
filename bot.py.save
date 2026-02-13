@@ -1,8 +1,8 @@
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 
-TOKEN = "8072695593:AAGDGYT8F0B_mTzbPLadMGAko6miBOyidKc"
-GROUP_ID = -1001234567890  # ID вашої групи
+TOKEN = "Ваш_токен_бота"
+GROUP_ID =   # ID вашої групи
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
